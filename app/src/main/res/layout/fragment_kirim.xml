@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".KirimFragment">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.wonderkiln.camerakit.CameraView
+                android:layout_marginTop="36dp"
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:ckFacing="front"
+                app:ckFlash="off"
+                app:ckFocus="continuous"
+                app:ckCropOutput="true"
+                app:ckZoom="off"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/idUser"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:hint="ID User"/>
+
+        <EditText
+            android:id="@+id/password"
+            android:paddingTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Password"/>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_foto"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:text="kirim"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/btn_train"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:text="train"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
