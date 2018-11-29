@@ -53,7 +53,6 @@ public class GPSTrackerActivity extends AppCompatActivity implements
                 intent.putExtra("Latitude", mLastLocation.getLatitude());
                 setResult(1,intent);
                 finish();
-
             }
         } catch (SecurityException e) {
 

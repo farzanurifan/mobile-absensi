@@ -36,14 +36,12 @@ public class KirimFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_kirim, container, false);
         getActivity().setTitle("Kirim Foto");
 
         idUser = (EditText) rootView.findViewById(R.id.idUser);
         password = (EditText) rootView.findViewById(R.id.password);
 
-//        final Intent intent = getIntent();
         cameradListener = new CameraKitEventListener() {
             @Override
             public void onEvent(CameraKitEvent cameraKitEvent) {
