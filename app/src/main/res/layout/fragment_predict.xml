@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AbsensiFragment">
+    tools:context=".PredictFragment">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -65,34 +65,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!--<Button-->
-            <!--android:id="@+id/predict_btn"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Predict"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/pertemuan"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingTop="10dp"-->
-            <!--android:paddingStart="15dp"-->
-            <!--android:paddingEnd="10dp"-->
-            <!--android:paddingBottom="10dp"-->
-            <!--android:text="Pertemuan ke 14"-->
-            <!--android:textSize="18sp" />-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/list_absen"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
-
-    <!--</LinearLayout>-->
 
 </FrameLayout>

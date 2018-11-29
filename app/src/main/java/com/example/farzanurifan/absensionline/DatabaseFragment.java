@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import android.app.Fragment;
 import android.database.Cursor;
@@ -21,7 +21,6 @@ public class DatabaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_database, container, false);
         getActivity().setTitle("Database Waktu Upload");
 

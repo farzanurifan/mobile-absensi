@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import com.google.gson.annotations.SerializedName;
 

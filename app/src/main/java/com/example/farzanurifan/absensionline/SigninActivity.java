@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,16 +19,13 @@ import com.wonderkiln.camerakit.CameraKitImage;
 import com.wonderkiln.camerakit.CameraKitVideo;
 import com.wonderkiln.camerakit.CameraView;
 
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PredictActivity extends AppCompatActivity {
+public class SigninActivity extends AppCompatActivity {
     private CameraView foto;
     private CameraKitEventListener cameraListener;
     private Button btnFoto;
@@ -42,7 +38,6 @@ public class PredictActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_predict);
         final Intent intent = getIntent();
-//        Toast.makeText(PredictActivity.this, intent.getStringExtra("nrp") , Toast.LENGTH_LONG).show();
         if(intent.getStringExtra("tipe").equals("Predict")) {
             this.setTitle("Predict Foto");
         } else {
@@ -69,17 +64,11 @@ public class PredictActivity extends AppCompatActivity {
                 byte[] picture = cameraKitImage.getJpeg();
                 Bitmap result = BitmapFactory.decodeByteArray(picture, 0, picture.length);
                 result = Bitmap.createScaledBitmap(result, 512, 512, true);
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
                 String myBase64Image = encodeToBase64(result, Bitmap.CompressFormat.JPEG, 100);
+
                 final ApiInterface api = Server.getclient().create(ApiInterface.class);
-                Log.d("test", "data:image/jpeg;base64," + myBase64Image);
-//                Log.d("test", intent.getStringExtra("nrp"));
-                JSONObject paramObject = new JSONObject();
                 final String password = password_predict.getText().toString();
-
-                final long StartTime = new Date().getTime();
                 final String userId = current_nrp.getText().toString();
-
                 String tipe = intent.getStringExtra("tipe");
                 if (tipe.equals("Predict")) {
                     Call<ResponseApi> predict = api.predictFoto(userId, password, "data:image/jpeg;base64," + myBase64Image);
@@ -88,15 +77,15 @@ public class PredictActivity extends AppCompatActivity {
                         public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                             System.out.println(response.toString());
                             String message = response.body().getMessage();
-                            Toast.makeText(PredictActivity.this, message, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(PredictActivity.this, MainActivity.class);
+                            Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(SigninActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
 
                         @Override
                         public void onFailure(Call<ResponseApi> call, Throwable t) {
                             t.printStackTrace();
-                            Toast.makeText(PredictActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SigninActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
                         }
                     });
                 } else {
@@ -106,15 +95,15 @@ public class PredictActivity extends AppCompatActivity {
                         public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                             System.out.println(response.toString());
                             String message = response.body().getMessage();
-                            Toast.makeText(PredictActivity.this, message, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(PredictActivity.this, MainActivity.class);
+                            Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(SigninActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
 
                         @Override
                         public void onFailure(Call<ResponseApi> call, Throwable t) {
                             t.printStackTrace();
-                            Toast.makeText(PredictActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SigninActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
                         }
                     });
                 }

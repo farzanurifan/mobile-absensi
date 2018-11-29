@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wonderkiln.camerakit.CameraKitError;
@@ -30,24 +29,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class KirimFragment extends Fragment {
+public class PredictFragment extends Fragment {
+    private Button btn_predict;
     private CameraView camera;
     private CameraKitEventListener cameradListener;
-    private Button btnCapture, btnTrain;
     private EditText password, idUser;
-    DatabaseHelper miniDb;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_kirim, container, false);
-        getActivity().setTitle("Kirim Foto");
+        View rootView = inflater.inflate(R.layout.fragment_predict, container, false);
+        getActivity().setTitle("Predict");
+        btn_predict = (Button) rootView.findViewById(R.id.btn_predict);
+        idUser = (EditText) rootView.findViewById(R.id.id_user);
+        password = (EditText) rootView.findViewById(R.id.password_user);
 
-        idUser = (EditText) rootView.findViewById(R.id.idUser);
-        password = (EditText) rootView.findViewById(R.id.password);
-
-//        final Intent intent = getIntent();
         cameradListener = new CameraKitEventListener() {
             @Override
             public void onEvent(CameraKitEvent cameraKitEvent) {
@@ -73,13 +69,12 @@ public class KirimFragment extends Fragment {
                 final long StartTime = new Date().getTime();
                 final String id_user = idUser.getText().toString();
                 final String password_user = password.getText().toString();
-                Call<ResponseApi> kirim =api.kirim(id_user, password_user,"data:image/jpeg;base64,"+myBase64Image);
+                Call<ResponseApi> kirim =api.predictFoto(id_user, password_user,"data:image/jpeg;base64,"+myBase64Image);
                 kirim.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         final long EndTime = new Date().getTime();
                         final long delta = EndTime - StartTime;
-                        saveDB(id_user, String.valueOf(StartTime), String.valueOf(EndTime), String.valueOf(delta), String.valueOf(EndTime));
                         String hasil = response.body().getMessage();
                         Toast.makeText(getActivity(), hasil, Toast.LENGTH_LONG).show();
                     }
@@ -97,61 +92,18 @@ public class KirimFragment extends Fragment {
             }
         };
 
-        camera = (CameraView) rootView.findViewById(R.id.camera);
+        camera = (CameraView) rootView.findViewById(R.id.camera_predict);
         camera.addCameraKitListener(cameradListener);
 
-        btnCapture = (Button) rootView.findViewById(R.id.btn_foto);
-        btnTrain = (Button) rootView.findViewById(R.id.btn_train);
-
-        btnCapture.setOnClickListener(new View.OnClickListener() {
+        btn_predict.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 camera.captureImage();
             }
         });
-
-        btnTrain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final ApiInterface api = Server.getclient().create(ApiInterface.class);
-                String id_user = idUser.getText().toString();
-                String password_user = password.getText().toString();
-                Call<ResponseApi> training = api.trainFoto(id_user, password_user);
-                training.enqueue(new Callback<ResponseApi>() {
-                    @Override
-                    public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                        String hasil = response.body().getMessage();
-                        Toast.makeText(getActivity(), hasil , Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseApi> call, Throwable t) {
-                        t.printStackTrace();
-                        Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
         return rootView;
     }
 
-    public void saveDB (String nama, String start, String end, String delta , String time) {
-        String _nama = nama;
-        String _start = start;
-        String _end = end;
-        String _delta = delta;
-        String _time = time;
-
-        miniDb = new DatabaseHelper(getContext());
-        boolean status = miniDb.insertData(_nama,_start,_end,_delta,_time);
-        if(status) {
-            Toast.makeText(getActivity(), "log saved" , Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(getActivity(), "gagal menyimpan di db" , Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     public void onResume() {

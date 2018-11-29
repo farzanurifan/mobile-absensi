@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import android.Manifest;
 import android.app.Fragment;
@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -17,7 +16,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
     private final int REQUEST_LOCATION_PERMISSION = 1;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    fragment = new AbsensiFragment();
+                    fragment = new PredictFragment();
                     break;
                 case R.id.navigation_dashboard:
                     fragment = new DatabaseFragment();
@@ -58,11 +56,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         requestLocationPermission();
 
-//        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        loadFragment(new AbsensiFragment());
+        loadFragment(new PredictFragment());
     }
 
     private void loadFragment(Fragment fragment) {
@@ -75,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 

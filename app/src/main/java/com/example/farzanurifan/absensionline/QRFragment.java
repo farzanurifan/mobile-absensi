@@ -1,4 +1,4 @@
-package com.example.farzanurifan.absenfragment;
+package com.example.farzanurifan.absensionline;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -44,7 +44,7 @@ public class QRFragment extends Fragment implements ZXingScannerView.ResultHandl
         alert1.show();
 
         if(jarak < 100) {
-            Intent intent = new Intent(getActivity(), PredictActivity.class);
+            Intent intent = new Intent(getActivity(), SigninActivity.class);
             intent.putExtra("agenda", ruangan);
             intent.putExtra("lat", latitude + "");
             intent.putExtra("lon", longitude + "");
