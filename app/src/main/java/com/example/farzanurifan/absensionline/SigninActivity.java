@@ -36,7 +36,7 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_predict);
+        setContentView(R.layout.activity_signin);
         final Intent intent = getIntent();
         if(intent.getStringExtra("tipe").equals("Predict")) {
             this.setTitle("Predict Foto");
