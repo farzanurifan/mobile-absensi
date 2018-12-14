@@ -1,6 +1,7 @@
 package com.example.farzanurifan.absensionline;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wonderkiln.camerakit.CameraKitError;
@@ -33,7 +35,10 @@ public class PredictFragment extends Fragment {
     private Button btn_predict;
     private CameraView camera;
     private CameraKitEventListener cameradListener;
-    private EditText password, idUser;
+    private String password, idUser;
+    TextView id_user;
+    ProgressDialog progressDialog;
+    MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,8 +46,19 @@ public class PredictFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_predict, container, false);
         getActivity().setTitle("Predict");
         btn_predict = (Button) rootView.findViewById(R.id.btn_predict);
-        idUser = (EditText) rootView.findViewById(R.id.id_user);
-        password = (EditText) rootView.findViewById(R.id.password_user);
+        id_user = (TextView) rootView.findViewById(R.id.id_user);
+
+        mainActivity = (MainActivity) getActivity();
+        idUser = mainActivity.idUser;
+        password = mainActivity.password;
+
+        id_user.setText("ID User: " + idUser);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading...");
+        progressDialog.setTitle("Mengirim Gambar");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
 
         cameradListener = new CameraKitEventListener() {
             @Override
@@ -67,21 +83,21 @@ public class PredictFragment extends Fragment {
                 JSONObject paramObject = new JSONObject();
 
                 final long StartTime = new Date().getTime();
-                final String id_user = idUser.getText().toString();
-                final String password_user = password.getText().toString();
-                Call<ResponseApi> kirim =api.predictFoto(id_user, password_user,"data:image/jpeg;base64,"+myBase64Image);
+                Call<ResponseApi> kirim =api.predictFoto(idUser, password,"data:image/jpeg;base64,"+myBase64Image);
                 kirim.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         final long EndTime = new Date().getTime();
                         final long delta = EndTime - StartTime;
                         String hasil = response.body().getMessage();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), hasil, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseApi> call, Throwable t) {
                         t.printStackTrace();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -98,6 +114,7 @@ public class PredictFragment extends Fragment {
         btn_predict.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 camera.captureImage();
             }
         });

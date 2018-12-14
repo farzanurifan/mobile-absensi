@@ -1,6 +1,7 @@
 package com.example.farzanurifan.absensionline;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wonderkiln.camerakit.CameraKitError;
@@ -30,8 +32,11 @@ public class KirimFragment extends Fragment {
     private CameraView camera;
     private CameraKitEventListener cameradListener;
     private Button btnCapture, btnTrain;
-    private EditText password, idUser;
+    private String password, idUser;
     DatabaseHelper miniDb;
+    TextView id_user;
+    ProgressDialog progressDialog;
+    MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,8 +44,18 @@ public class KirimFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_kirim, container, false);
         getActivity().setTitle("Kirim Foto");
 
-        idUser = (EditText) rootView.findViewById(R.id.idUser);
-        password = (EditText) rootView.findViewById(R.id.password);
+        id_user = (TextView) rootView.findViewById(R.id.id_user);
+
+        mainActivity = (MainActivity) getActivity();
+        idUser = mainActivity.idUser;
+        password = mainActivity.password;
+
+        id_user.setText("ID User: " + idUser);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
 
         cameradListener = new CameraKitEventListener() {
             @Override
@@ -62,23 +77,23 @@ public class KirimFragment extends Fragment {
 
                 final ApiInterface api = Server.getclient().create(ApiInterface.class);
                 final long StartTime = new Date().getTime();
-                final String id_user = idUser.getText().toString();
-                final String password_user = password.getText().toString();
 
-                Call<ResponseApi> kirim =api.kirim(id_user, password_user,"data:image/jpeg;base64,"+myBase64Image);
+                Call<ResponseApi> kirim =api.kirim(idUser, password,"data:image/jpeg;base64,"+myBase64Image);
                 kirim.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         final long EndTime = new Date().getTime();
                         final long delta = EndTime - StartTime;
-                        saveDB(id_user, String.valueOf(StartTime), String.valueOf(EndTime), String.valueOf(delta), String.valueOf(EndTime));
+                        saveDB(idUser, String.valueOf(StartTime), String.valueOf(EndTime), String.valueOf(delta), String.valueOf(EndTime));
                         String hasil = response.body().getMessage();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), hasil, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseApi> call, Throwable t) {
                         t.printStackTrace();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -98,6 +113,8 @@ public class KirimFragment extends Fragment {
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.setTitle("Mengirim Gambar");
+                progressDialog.show();
                 camera.captureImage();
             }
         });
@@ -105,20 +122,23 @@ public class KirimFragment extends Fragment {
         btnTrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.setTitle("Training Gambar");
+                progressDialog.show();
                 final ApiInterface api = Server.getclient().create(ApiInterface.class);
-                String id_user = idUser.getText().toString();
-                String password_user = password.getText().toString();
-                Call<ResponseApi> training = api.trainFoto(id_user, password_user);
+
+                Call<ResponseApi> training = api.trainFoto(idUser, password);
                 training.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         String hasil = response.body().getMessage();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), hasil , Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseApi> call, Throwable t) {
                         t.printStackTrace();
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -136,13 +156,7 @@ public class KirimFragment extends Fragment {
         String _time = time;
 
         miniDb = new DatabaseHelper(getContext());
-        boolean status = miniDb.insertData(_nama,_start,_end,_delta,_time);
-        if(status) {
-            Toast.makeText(getActivity(), "log saved" , Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(getActivity(), "gagal menyimpan di db" , Toast.LENGTH_LONG).show();
-        }
+        miniDb.insertData(_nama,_start,_end,_delta,_time);
     }
 
     @Override

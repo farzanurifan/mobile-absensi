@@ -30,22 +30,15 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <EditText
-            android:id="@+id/idUser"
+        <TextView
+            android:id="@+id/id_user"
             android:paddingTop="20dp"
+            android:paddingBottom="15dp"
+            android:textColor="#000000"
             android:layout_gravity="center_horizontal"
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
-            android:hint="ID User"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/password"
-            android:paddingTop="20dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Password"/>
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -60,6 +53,8 @@
                 android:layout_width="80dp"
                 android:layout_height="35dp"
                 android:text="kirim"
+                android:textColor="#ffffff"
+                android:theme="@style/MyButton"
                 android:textSize="12sp"/>
 
             <Button
@@ -67,6 +62,8 @@
                 android:layout_width="80dp"
                 android:layout_height="35dp"
                 android:text="train"
+                android:textColor="#ffffff"
+                android:theme="@style/MyButton"
                 android:textSize="12sp"/>
 
         </LinearLayout>

@@ -8,4 +8,9 @@
         <item name="colorAccent">@android:color/holo_blue_dark</item>
     </style>
 
+    <style name="MyButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@android:color/holo_blue_bright</item>
+        <item name="colorButtonNormal">@android:color/holo_blue_dark</item>
+    </style>
+
 </resources>

@@ -17,6 +17,8 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class QRFragment extends Fragment implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
     private double longitude, latitude;
+    private String password, idUser;
+    MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,6 +27,10 @@ public class QRFragment extends Fragment implements ZXingScannerView.ResultHandl
         Intent intent = new Intent(getContext(), GPSTrackerActivity.class);
         startActivityForResult(intent,1);
         mScannerView = new ZXingScannerView(getContext());
+
+        mainActivity = (MainActivity) getActivity();
+        idUser = mainActivity.idUser;
+        password = mainActivity.password;
 
         return mScannerView;
     }
@@ -37,20 +43,21 @@ public class QRFragment extends Fragment implements ZXingScannerView.ResultHandl
         String ruangan = splitted[2];
         Double jarak = distance(latQR, latitude, longQR, longitude);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Scan Result");
-        builder.setMessage("Ruang :\n" + ruangan + "\n\nLokasi ruangan :\n" + latQR + ", " + longQR + "\n\nLokasi anda :\n" + latitude + ", " + longitude + "\n\nJarak :\n" + jarak + " meter");
-        AlertDialog alert1 = builder.create();
-        alert1.show();
-
         if(jarak < 100) {
             Intent intent = new Intent(getActivity(), SigninActivity.class);
             intent.putExtra("agenda", ruangan);
             intent.putExtra("lat", latitude + "");
             intent.putExtra("lon", longitude + "");
             intent.putExtra("tipe", ruangan+ ": " + jarak + " meter");
+            intent.putExtra("idUser", idUser);
+            intent.putExtra("password", password);
             startActivity(intent);
         } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Scan Result");
+            builder.setMessage("Ruang :\n" + ruangan + "\n\nLokasi ruangan :\n" + latQR + ", " + longQR + "\n\nLokasi anda :\n" + latitude + ", " + longitude + "\n\nJarak :\n" + jarak + " meter");
+            AlertDialog alert1 = builder.create();
+            alert1.show();
             Toast.makeText(getContext(), "Anda berada lebih dari 100 meter", Toast.LENGTH_LONG).show();
         }
         mScannerView.resumeCameraPreview(this);

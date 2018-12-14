@@ -45,6 +45,7 @@ public class DatabaseFragment extends Fragment {
             tv.setTextSize(18);
             tv.setPadding(5, 5, 5, 5);
             tv.setText(c);
+            tv.setTextColor(Color.BLACK);
             rowHeader.addView(tv);
         }
         tableLayout.addView(rowHeader);
@@ -71,6 +72,7 @@ public class DatabaseFragment extends Fragment {
                 tv.setTextSize(16);
                 tv.setPadding(5, 5, 5, 5);
                 tv.setText(text);
+//                tv.setTextColor(Color.BLACK);
                 row.addView(tv);
             }
 

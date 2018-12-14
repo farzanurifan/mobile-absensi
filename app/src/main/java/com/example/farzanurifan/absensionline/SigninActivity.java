@@ -1,5 +1,6 @@
 package com.example.farzanurifan.absensionline;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,9 +30,9 @@ public class SigninActivity extends AppCompatActivity {
     private CameraView foto;
     private CameraKitEventListener cameraListener;
     private Button btnFoto;
-    private TextView tipe_activity;
-    private EditText current_nrp;
-    private EditText password_predict;
+    private TextView tipe_activity, current_nrp;
+    ProgressDialog progressDialog;
+    private String password, idUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +44,21 @@ public class SigninActivity extends AppCompatActivity {
         } else {
             this.setTitle("Sign In");
         }
-        current_nrp = (EditText) findViewById(R.id.current_nrp);
+
+        current_nrp = (TextView) findViewById(R.id.current_nrp);
         tipe_activity = (TextView) findViewById(R.id.tipe_activity);
         tipe_activity.setText(intent.getStringExtra("tipe"));
-        password_predict = (EditText) findViewById(R.id.password_predict);
+
+        idUser = intent.getStringExtra("idUser");
+        password = intent.getStringExtra("password");
+
+        current_nrp.setText("ID User: " + idUser);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setTitle("Mengirim Gambar");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
 
         cameraListener = new CameraKitEventListener() {
             @Override
@@ -67,46 +79,28 @@ public class SigninActivity extends AppCompatActivity {
                 String myBase64Image = encodeToBase64(result, Bitmap.CompressFormat.JPEG, 100);
 
                 final ApiInterface api = Server.getclient().create(ApiInterface.class);
-                final String password = password_predict.getText().toString();
-                final String userId = current_nrp.getText().toString();
-                String tipe = intent.getStringExtra("tipe");
-                if (tipe.equals("Predict")) {
-                    Call<ResponseApi> predict = api.predictFoto(userId, password, "data:image/jpeg;base64," + myBase64Image);
-                    predict.enqueue(new Callback<ResponseApi>() {
-                        @Override
-                        public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                            System.out.println(response.toString());
-                            String message = response.body().getMessage();
-                            Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        }
 
-                        @Override
-                        public void onFailure(Call<ResponseApi> call, Throwable t) {
-                            t.printStackTrace();
-                            Toast.makeText(SigninActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    Call<ResponseApi> signin = api.signin(userId, password, "data:image/jpeg;base64," + myBase64Image, intent.getStringExtra("lat"), intent.getStringExtra("lon"), intent.getStringExtra("agenda"));
-                    signin.enqueue(new Callback<ResponseApi>() {
-                        @Override
-                        public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                            System.out.println(response.toString());
-                            String message = response.body().getMessage();
-                            Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        }
+                Call<ResponseApi> signin = api.signin(idUser, password, "data:image/jpeg;base64," + myBase64Image, intent.getStringExtra("lat"), intent.getStringExtra("lon"), intent.getStringExtra("agenda"));
+                signin.enqueue(new Callback<ResponseApi>() {
+                    @Override
+                    public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
+                        System.out.println(response.toString());
+                        String message = response.body().getMessage();
+                        Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                        Intent intent = new Intent(SigninActivity.this, MainActivity.class);
+                        intent.putExtra("idUser", idUser);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
+                    }
 
-                        @Override
-                        public void onFailure(Call<ResponseApi> call, Throwable t) {
-                            t.printStackTrace();
-                            Toast.makeText(SigninActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<ResponseApi> call, Throwable t) {
+                        t.printStackTrace();
+                        progressDialog.dismiss();
+                        Toast.makeText(SigninActivity.this, "Failed to send", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
@@ -122,6 +116,7 @@ public class SigninActivity extends AppCompatActivity {
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.show();
                 foto.captureImage();
             }
         });
