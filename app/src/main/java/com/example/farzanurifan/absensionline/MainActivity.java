@@ -8,8 +8,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,14 +29,17 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_predict:
                     fragment = new PredictFragment();
                     break;
-                case R.id.navigation_dashboard:
-                    fragment = new DatabaseFragment();
+                case R.id.navigation_predict_ttd:
+                    fragment = new TtdFragment();
                     break;
-                case R.id.navigation_notifications:
+                case R.id.navigation_kirim:
                     fragment = new KirimFragment();
+                    break;
+                case R.id.navigation_kirim_ttd:
+                    fragment = new TtdKirimFragment();
                     break;
                 case R.id.navigation_qrcode:
                     if (statusCheck()) {

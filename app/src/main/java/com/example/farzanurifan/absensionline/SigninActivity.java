@@ -1,6 +1,8 @@
 package com.example.farzanurifan.absensionline;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,18 +34,14 @@ public class SigninActivity extends AppCompatActivity {
     private Button btnFoto;
     private TextView tipe_activity, current_nrp;
     ProgressDialog progressDialog;
-    private String password, idUser;
+    private String password, idUser, lat, lon, agenda;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         final Intent intent = getIntent();
-        if(intent.getStringExtra("tipe").equals("Predict")) {
-            this.setTitle("Predict Foto");
-        } else {
-            this.setTitle("Sign In");
-        }
+        setTitle("Sign In");
 
         current_nrp = (TextView) findViewById(R.id.current_nrp);
         tipe_activity = (TextView) findViewById(R.id.tipe_activity);
@@ -51,6 +49,9 @@ public class SigninActivity extends AppCompatActivity {
 
         idUser = intent.getStringExtra("idUser");
         password = intent.getStringExtra("password");
+        lat = intent.getStringExtra("lat");
+        lon = intent.getStringExtra("lon");
+        agenda = intent.getStringExtra("agenda");
 
         current_nrp.setText("ID User: " + idUser);
 
@@ -80,18 +81,42 @@ public class SigninActivity extends AppCompatActivity {
 
                 final ApiInterface api = Server.getclient().create(ApiInterface.class);
 
-                Call<ResponseApi> signin = api.signin(idUser, password, "data:image/jpeg;base64," + myBase64Image, intent.getStringExtra("lat"), intent.getStringExtra("lon"), intent.getStringExtra("agenda"));
+                Call<ResponseApi> signin = api.signin(idUser, password, "data:image/jpeg;base64," + myBase64Image, lat, lon, agenda);
                 signin.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         System.out.println(response.toString());
                         String message = response.body().getMessage();
-                        Toast.makeText(SigninActivity.this, message, Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
-                        Intent intent = new Intent(SigninActivity.this, MainActivity.class);
-                        intent.putExtra("idUser", idUser);
-                        intent.putExtra("password", password);
-                        startActivity(intent);
+                        if(message.contains("ACCEPTED")) {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(SigninActivity.this);
+                            builder.setMessage(message + "\n\nWajah diterima, silakan lanjut ke tanda tangan\n\n")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(final DialogInterface dialog, final int id) {
+                                            Intent intent = new Intent(SigninActivity.this, TtdActivity.class);
+                                            intent.putExtra("idUser", idUser);
+                                            intent.putExtra("password", password);
+                                            intent.putExtra("lat", lat);
+                                            intent.putExtra("lon", lon);
+                                            intent.putExtra("agenda", agenda);
+                                            startActivity(intent);
+                                        }
+                                    });
+                            final AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                        else {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(SigninActivity.this);
+                            builder.setMessage(message + "\n\nWajah ditolak, silakan mengulangi\n\n")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(final DialogInterface dialog, final int id) {
+                                        }
+                                    });
+                            final AlertDialog alert = builder.create();
+                            alert.show();
+                        }
                     }
 
                     @Override

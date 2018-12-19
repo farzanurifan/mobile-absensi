@@ -21,4 +21,21 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/signin/")
     Call<ResponseApi> signin(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image, @Field("Lat") String Lat, @Field("Lon") String Lon, @Field("idAgenda") String idAgenda);
+
+    @FormUrlEncoded
+    @POST("/sendImg_TTD/")
+    Call<ResponseApi> kirim_ttd(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image);
+
+    @FormUrlEncoded
+    @POST("/doTrain_TTD/")
+    Call<ResponseApi> trainFoto_ttd(@Field("idUser") String idUser, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("/doPredict_TTD/")
+    Call<ResponseApi> predictFoto_ttd(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image);
+
+    @FormUrlEncoded
+    @POST("/signin_TTD/")
+    Call<ResponseApi> signin_ttd(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image, @Field("Lat") String Lat, @Field("Lon") String Lon, @Field("idAgenda") String idAgenda);
+
 }

@@ -1,7 +1,9 @@
 package com.example.farzanurifan.absensionline;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -85,9 +87,17 @@ public class KirimFragment extends Fragment {
                         final long EndTime = new Date().getTime();
                         final long delta = EndTime - StartTime;
                         saveDB(idUser, String.valueOf(StartTime), String.valueOf(EndTime), String.valueOf(delta), String.valueOf(EndTime));
-                        String hasil = response.body().getMessage();
+                        String message = response.body().getMessage();
                         progressDialog.dismiss();
-                        Toast.makeText(getActivity(), hasil, Toast.LENGTH_LONG).show();
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, final int id) {
+                                    }
+                                });
+                        final AlertDialog alert = builder.create();
+                        alert.show();
                     }
 
                     @Override
@@ -130,9 +140,17 @@ public class KirimFragment extends Fragment {
                 training.enqueue(new Callback<ResponseApi>() {
                     @Override
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                        String hasil = response.body().getMessage();
+                        String message = response.body().getMessage();
                         progressDialog.dismiss();
-                        Toast.makeText(getActivity(), hasil , Toast.LENGTH_LONG).show();
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, final int id) {
+                                    }
+                                });
+                        final AlertDialog alert = builder.create();
+                        alert.show();
                     }
 
                     @Override

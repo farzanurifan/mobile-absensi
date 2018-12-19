@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/verification"
-        android:title="Predict" />
+        android:id="@+id/navigation_predict"
+        android:icon="@drawable/face_detection"
+        android:title="Foto" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/database"
-        android:title="Database" />
+        android:id="@+id/navigation_predict_ttd"
+        android:icon="@drawable/signature"
+        android:title="TTD" />
 
     <item
         android:id="@+id/navigation_qrcode"
@@ -17,8 +17,13 @@
         android:title="Sign In" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_kirim_ttd"
         android:icon="@drawable/upload"
-        android:title="Kirim" />
+        android:title="Kirim TTD" />
+
+    <item
+        android:id="@+id/navigation_kirim"
+        android:icon="@drawable/photo"
+        android:title="Kirim Foto" />
 
 </menu>

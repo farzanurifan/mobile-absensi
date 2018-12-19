@@ -1,7 +1,10 @@
 package com.example.farzanurifan.absensionline;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -44,7 +47,7 @@ public class PredictFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_predict, container, false);
-        getActivity().setTitle("Predict");
+        getActivity().setTitle("Predict Wajah");
         btn_predict = (Button) rootView.findViewById(R.id.btn_predict);
         id_user = (TextView) rootView.findViewById(R.id.id_user);
 
@@ -89,9 +92,17 @@ public class PredictFragment extends Fragment {
                     public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                         final long EndTime = new Date().getTime();
                         final long delta = EndTime - StartTime;
-                        String hasil = response.body().getMessage();
+                        String message = response.body().getMessage();
                         progressDialog.dismiss();
-                        Toast.makeText(getActivity(), hasil, Toast.LENGTH_LONG).show();
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, final int id) {
+                                    }
+                                });
+                        final AlertDialog alert = builder.create();
+                        alert.show();
                     }
 
                     @Override
