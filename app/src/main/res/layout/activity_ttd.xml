@@ -13,15 +13,6 @@
         android:layout_height="match_parent"
         android:background="#F5F5F5">
 
-        <TextView
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
-            android:text="Silahkan tanda tangan di bawah ..."
-            android:maxLength="30"
-            android:paddingBottom="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content" />
-
         <RelativeLayout
             android:id="@+id/parentView"
             android:layout_width="250dp"

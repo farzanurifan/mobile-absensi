@@ -1,6 +1,7 @@
 package com.example.farzanurifan.absensionline;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -37,28 +38,48 @@ public class QRFragment extends Fragment implements ZXingScannerView.ResultHandl
 
     @Override
     public void handleResult(com.google.zxing.Result rawResult) {
+        mScannerView.stopCamera();
         String[] splitted = rawResult.getText().split(",");
         double latQR = Double.valueOf(splitted[0]);
         double longQR = Double.valueOf(splitted[1]);
-        String ruangan = splitted[2];
-        Double jarak = distance(latQR, latitude, longQR, longitude);
+        final String ruangan = splitted[2];
+        final Double jarak = distance(latQR, latitude, longQR, longitude);
 
         if(jarak < 100) {
-            Intent intent = new Intent(getActivity(), SigninActivity.class);
-            intent.putExtra("agenda", ruangan);
-            intent.putExtra("lat", latitude + "");
-            intent.putExtra("lon", longitude + "");
-            intent.putExtra("tipe", ruangan+ ": " + jarak + " meter");
-            intent.putExtra("idUser", idUser);
-            intent.putExtra("password", password);
-            startActivity(intent);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Ruang :\n" + ruangan + "\n\nLokasi ruangan :\n" + latQR + ", " + longQR + "\n\nLokasi anda :\n" + latitude + ", " + longitude + "\n\nJarak :\n" + jarak + " meter\n\nApakah ruangan sudah benar?\n\n")
+                    .setCancelable(false)
+                    .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            Intent intent = new Intent(getActivity(), SigninActivity.class);
+                            intent.putExtra("agenda", ruangan);
+                            intent.putExtra("lat", latitude + "");
+                            intent.putExtra("lon", longitude + "");
+                            intent.putExtra("tipe", ruangan+ ": " + jarak + " meter");
+                            intent.putExtra("idUser", idUser);
+                            intent.putExtra("password", password);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            mScannerView.startCamera();
+                            dialog.cancel();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Scan Result");
-            builder.setMessage("Ruang :\n" + ruangan + "\n\nLokasi ruangan :\n" + latQR + ", " + longQR + "\n\nLokasi anda :\n" + latitude + ", " + longitude + "\n\nJarak :\n" + jarak + " meter");
-            AlertDialog alert1 = builder.create();
-            alert1.show();
-            Toast.makeText(getContext(), "Anda berada lebih dari 100 meter", Toast.LENGTH_LONG).show();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Ruang :\n" + ruangan + "\n\nLokasi ruangan :\n" + latQR + ", " + longQR + "\n\nLokasi anda :\n" + latitude + ", " + longitude + "\n\nJarak :\n" + jarak + " meter\n\nGagal, anda berada lebih dari 100 meter\n\n")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            mScannerView.startCamera();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
         }
         mScannerView.resumeCameraPreview(this);
     }

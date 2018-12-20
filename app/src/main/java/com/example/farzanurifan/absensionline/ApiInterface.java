@@ -23,7 +23,7 @@ public interface ApiInterface {
     Call<ResponseApi> signin(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image, @Field("Lat") String Lat, @Field("Lon") String Lon, @Field("idAgenda") String idAgenda);
 
     @FormUrlEncoded
-    @POST("/sendImg_TTD/")
+    @POST("/sendSignature/")
     Call<ResponseApi> kirim_ttd(@Field("idUser") String idUser, @Field("password") String password, @Field("image") String image);
 
     @FormUrlEncoded
